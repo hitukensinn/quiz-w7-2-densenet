@@ -451,7 +451,6 @@ def main(_):
     ####################
     # Define the model #
     ####################
-    logits = 0
     def clone_fn(batch_queue):
       """Allows data parallelism by creating multiple clones of network_fn."""
       images, labels = batch_queue.dequeue()
