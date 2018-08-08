@@ -13,7 +13,7 @@ def trunc_normal(stddev): return tf.truncated_normal_initializer(stddev=stddev)
 
 
 def bn_act_conv_drp(current, num_outputs, kernel_size, scope='block'):
-    current = slim.batch_norm(current, scope=scope + '_bn')
+    current = slim.batch_norm(current, scope=scope + '_bn',reuse = tf.AUTO_REUSE)
     current = tf.nn.relu(current)
     current = slim.conv2d(current, num_outputs, kernel_size, scope=scope + '_conv')
     current = slim.dropout(current, scope=scope + '_dropout')
