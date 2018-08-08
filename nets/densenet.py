@@ -73,27 +73,27 @@ def densenet(images, num_classes=1001, is_training=False,
             padding='VALID')
             current = slim.max_pool2d(current, [3, 3],stride=2)
 
-            current = block(current,6,growth)
+            current_1 = block(current,6,growth)
             nchannels += nchannels + 6
-            current = transition(current,nchannels)
+            current_1 = transition(current_1,nchannels)
 
-            current = block(current,12,growth)
+            current_2 = block(current_1,12,growth)
             nchannels += nchannels + 12
-            current = transition(current,nchannels)
+            current_2 = transition(current_2,nchannels)
 
-            current = block(current,24,growth)
+            current_3 = block(current_2,24,growth)
             nchannels += nchannels + 24
-            current = transition(current,nchannels)
+            current_3 = transition(current_3,nchannels)
 
-            current = block(current,16,growth)
+            current_4 = block(current_3,16,growth)
             nchannels += nchannels + 16
 
 
-            current = slim.avg_pool2d(current, current.shape[1:3],stride=[1, 1], padding='VALID')
-            current = slim.conv2d(current, num_classes, [1,1], activation_fn=tf.nn.softmax,weights_initializer=trunc_normal(0.001))
+            current_out = slim.avg_pool2d(current_4, current.shape[1:3],stride=[1, 1], padding='VALID')
+            current_out = slim.conv2d(current_out, num_classes, [1,1], activation_fn=tf.nn.softmax,weights_initializer=trunc_normal(0.001))
 
-            logits = tf.squeeze(current, [1, 2], name='SpatialSqueeze')
-            end_points['Logits'] = aux_logits
+            logits = tf.squeeze(current_out, [1, 2], name='SpatialSqueeze')
+            end_points['Logits'] = logits
             ##########################
 
     return logits, end_points
