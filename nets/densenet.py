@@ -74,19 +74,19 @@ def densenet(images, num_classes=1001, is_training=False,
             current = slim.max_pool2d(current, [3, 3],stride=2)
 
             current = block(current,6,growth,scope='Conv2d_1')
-            nchannels += nchannels + 6
+            nchannels += 6
             current = transition(current,nchannels,scope='trans_1')
 
             current = block(current,12,growth,scope='Conv2d_2')
-            nchannels += nchannels + 12
+            nchannels += 12
             current = transition(current,nchannels,scope='trans_2')
 
             current = block(current,24,growth,scope='Conv2d_3')
-            nchannels += nchannels + 24
+            nchannels += 24
             current = transition(current,nchannels,scope='trans_3')
 
             current = block(current,16,growth,scope='Conv2d_4')
-            nchannels += nchannels + 16
+            nchannels += 16
 
 
             current = slim.avg_pool2d(current, current.shape[1:3],stride=[1, 1], padding='VALID',scope='pool_avg')
