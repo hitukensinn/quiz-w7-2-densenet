@@ -29,6 +29,12 @@ def block(net, layers, growth, scope='block'):
         net = tf.concat(axis=3, values=[net, tmp])
     return net
 
+def transition(current, num_outputs, scope='transition'):
+    current = slim.batch_norm(current, scope=scope + '_tn')
+    current = slim.conv2d(current, num_outputs, [1, 1])
+    current = slim.max_pool2d(current, [2, 2])
+    return current
+
 
 def densenet(images, num_classes=1001, is_training=False,
              dropout_keep_prob=0.8,
@@ -62,7 +68,32 @@ def densenet(images, num_classes=1001, is_training=False,
                                          keep_prob=dropout_keep_prob)) as ssc:
             pass
             ##########################
-            # Put your code here.
+            nchannels = images.shape[3]
+            current = slim.conv2d(images, 112, [7, 7],weights_initializer=trunc_normal(0.01),
+            padding='VALID')
+            current = slim.max_pool2d(current, [3, 3],stride=2)
+
+            current = block(current,6,growth)
+            nchannels += nchannels + 6
+            current = transition(current,nchannels)
+
+            current = block(current,12,growth)
+            nchannels += nchannels + 12
+            current = transition(current,nchannels)
+
+            current = block(current,24,growth)
+            nchannels += nchannels + 24
+            current = transition(current,nchannels)
+
+            current = block(current,16,growth)
+            nchannels += nchannels + 16
+
+
+            current = slim.avg_pool2d(current, current.shape[1:3],stride=[1, 1], padding='VALID')
+            current = slim.conv2d(current, num_classes, [1,1], activation_fn=tf.nn.softmax,weights_initializer=trunc_normal(0.001))
+
+            logits = tf.squeeze(current, [1, 2], name='SpatialSqueeze')
+            end_points['Logits'] = aux_logits
             ##########################
 
     return logits, end_points
