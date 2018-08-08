@@ -90,8 +90,7 @@ def densenet(images, num_classes=1001, is_training=False,
 
 
             current = slim.avg_pool2d(current, current.shape[1:3],stride=[1, 1], padding='VALID',scope='pool_avg')
-            current = slim.conv2d(current, num_classes, [1,1], activation_fn=tf.nn.softmax,weights_initializer=trunc_normal(0.001),
-            ,scope='Conv2d_1x1')
+            current = slim.conv2d(current, num_classes, [1,1], activation_fn=tf.nn.softmax,weights_initializer=trunc_normal(0.001),scope='Conv2d_1x1')
 
             logits = tf.squeeze(current, [1, 2], name='SpatialSqueeze')
             end_points['Logits'] = logits
