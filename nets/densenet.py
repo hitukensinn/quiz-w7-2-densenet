@@ -7,6 +7,7 @@ from __future__ import print_function
 import tensorflow as tf
 
 slim = tf.contrib.slim
+tf.ConfigProto(log_device_placement=True,allow_soft_placement=True)
 
 
 def trunc_normal(stddev): return tf.truncated_normal_initializer(stddev=stddev)
